@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>ContentFilters</key>
+	<dict/>
+	<key>auto_connect</key>
+	<true/>
+	<key>data</key>
+	<dict>
+		<key>connection</key>
+		<dict>
+			<key>database</key>
+			<string>sakila</string>
+			<key>host</key>
+			<string>127.0.0.1</string>
+			<key>kcid</key>
+			<string>5511100198317656456</string>
+			<key>name</key>
+			<string>localhost</string>
+			<key>rdbms_type</key>
+			<string>mysql</string>
+			<key>sslCACertFileLocation</key>
+			<string></string>
+			<key>sslCACertFileLocationEnabled</key>
+			<integer>0</integer>
+			<key>sslCertificateFileLocation</key>
+			<string></string>
+			<key>sslCertificateFileLocationEnabled</key>
+			<integer>0</integer>
+			<key>sslKeyFileLocation</key>
+			<string></string>
+			<key>sslKeyFileLocationEnabled</key>
+			<integer>0</integer>
+			<key>type</key>
+			<string>SPTCPIPConnection</string>
+			<key>useSSL</key>
+			<integer>0</integer>
+			<key>user</key>
+			<string>root</string>
+		</dict>
+		<key>session</key>
+		<dict>
+			<key>connectionEncoding</key>
+			<string>utf8mb4</string>
+			<key>contentFilterV2</key>
+			<dict>
+				<key>children</key>
+				<array/>
+				<key>filterClass</key>
+				<string>groupNode</string>
+				<key>isConjunction</key>
+				<true/>
+			</dict>
+			<key>contentPageNumber</key>
+			<integer>1</integer>
+			<key>contentSelection</key>
+			<data>
+			YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0
+			b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctEICVRk
+			YXRhgAGoCwwXGBkaHiVVJG51bGzTDQ4PEBMWV05TLmtleXNaTlMu
+			b2JqZWN0c1YkY2xhc3OiERKAAoADohQVgASABYAHVHR5cGVUcm93
+			c18QHVNlbGVjdGlvbkRldGFpbFR5cGVOU0luZGV4U2V00hsPHB1c
+			TlNSYW5nZUNvdW50EACABtIfICEiWiRjbGFzc25hbWVYJGNsYXNz
+			ZXNaTlNJbmRleFNldKIjJFpOU0luZGV4U2V0WE5TT2JqZWN00h8g
+			JidcTlNEaWN0aW9uYXJ5oiYkAAgAEQAaACQAKQAyADcASQBMAFEA
+			UwBcAGIAaQBxAHwAgwCGAIgAigCNAI8AkQCTAJgAnQC9AMIAzwDR
+			ANMA2ADjAOwA9wD6AQUBDgETASAAAAAAAAACAQAAAAAAAAAoAAAA
+			AAAAAAAAAAAAAAABIw==
+			</data>
+			<key>contentSortColIsAsc</key>
+			<true/>
+			<key>contentViewport</key>
+			<string>{{0, 0}, {695, 481}}</string>
+			<key>isToolbarVisible</key>
+			<true/>
+			<key>queries</key>
+			<string>###################### LAB QUERY 1 ###########################
+
+#3.	title selection
+select
+f.title
+from film f
+limit 10;
+
+#4.	language selection
+select
+l.name as "language"
+from language l;
+
+#4.1	language selection available per movie
+select
+f.title,
+l.name as "language"
+from film f
+LEFT JOIN language l on f.language_id = l.language_id
+#where l.language_id = 1
+limit 10;
+
+
+
+#5	number of staff
+select count(*)
+from STAFF s;
+
+
+#5.1	number of stores
+select count(*)
+from STORE st;
+
+#5.2	employee first names only
+select
+FIRST_NAME
+from STAFF s;
+
+#6	movie rental period
+select
+rental_id,
+DATEDIFF(return_date,rental_date) as "rentaldays"
+from RENTAL r
+limit 10;
+
+#days where movies were rented
+select count(distinct left('rental_date',10))
+FROM sakila.rental
+
+
+
+###################### LAB QUERY 2 ###########################
+
+#7.	Select all the actors with the first name ‘Scarlett’.
+select *
+from ACTOR
+where FIRST_NAME = "Scarlett";
+
+#8.	Select all the actors with the last name ‘Johansson’.
+select *
+from ACTOR
+where LAST_NAME = "Johansson";
+
+#9.	How many films (movies) total are available for rent?
+select distinct count(INVENTORY_ID) as "#moviesavailable"
+from INVENTORY;
+#4581
+
+#10.	How many films have been rented total?
+select count(RENTAL_ID)
+from RENTAL;
+#16044
+
+#10.1	How many unique films have been rented?
+select distinct count(TITLE) as "#movies_rented"
+from FILM
+where rental_rate &gt; 0;
+#1000
+
+#10.1	How many unique films have been rented? (2nd approach)
+select count(*)
+from INVENTORY;
+#4581
+
+#11.	What is the shortest and longest rental period?
+select
+min(datediff(return_date,rental_date)) as "min_rental"
+from RENTAL;
+
+select
+max(datediff(return_date,rental_date)) as "max_rental"
+from RENTAL;
+
+
+#12.	What are the shortest and longest movie duration? Name the values max_duration and min_duration.
+select min(LENGTH) from FILM #46
+select max(LENGTH) from FILM #185
+;
+
+#13.	What's the average movie duration?
+select round(AVG(LENGTH),0) from FILM #115
+;
+
+#14.	What's the average movie duration expressed in format (hours, minutes)? Hint, you will need to use floor and % 
+select floor(AVG(LENGTH)/60) as 'hours', floor(AVG(LENGTH))%60 as minutes from FILM;
+
+#15.	How many movies are longer than 3 hours? Remember the duration is in minutes 
+select count(distinct TITLE)
+from FILM
+where LENGTH &gt;180;
+#39
+
+#16.	Get the name and email of all customers, formatted nicely in two columns  Example: Mary SMITH mary.smith@sakilacustomer.org
+select
+concat(FIRST_NAME, " ", LAST_NAME) as customername,
+email
+from CUSTOMER;
+
+#17.	What's the length of the longest film title?
+Select TITLE, LENGTH(TITLE)
+FROM FILM
+where length(TITLE) = 27;
+
+
+
+
+
+
+
+
+</string>
+			<key>view</key>
+			<string>SP_VIEW_CUSTOMQUERY</string>
+			<key>windowVerticalDividerPosition</key>
+			<real>214</real>
+		</dict>
+	</dict>
+	<key>encrypted</key>
+	<false/>
+	<key>format</key>
+	<string>connection</string>
+	<key>queryFavorites</key>
+	<array/>
+	<key>queryHistory</key>
+	<array>
+		<string>select
+rental_id,
+DATEDIFF(return_date,rental_date) as "rentaldays"
+from RENTAL r
+limit 10</string>
+		<string>select floor(AVG(LENGTH)/60) as 'hours', floor(AVG(LENGTH))%60 as minutes from FILM</string>
+		<string>select floor(AVG(LENGTH))/60 as 'hours', floor(AVG(LENGTH))%60 as minutes from FILM</string>
+		<string>select
+f.title,
+l.name as "language"
+from film f
+LEFT JOIN language l on f.language_id = l.language_id
+#LEFT JOIN language l using l.language_id
+where l.language_id = 1
+#limit 10;</string>
+		<string>#4.1	language selection available per movie
+select
+f.title,
+l.name as "language"
+from film f
+LEFT JOIN language l on f.language_id = l.language_id
+#LEFT JOIN language l using l.language_id
+where l.language_id = 2
+limit 10</string>
+		<string>select
+f.title,
+l.name as "language"
+from film f
+LEFT JOIN language l on f.language_id = l.language_id
+#LEFT JOIN language l using l.language_id
+where l.language_id = 1
+limit 10</string>
+		<string>select
+f.title,
+l.name as "language"
+from film f
+LEFT JOIN language l on f.language_id = l.language_id
+#LEFT JOIN language l using l.language_id
+where l.language_id &gt; 1
+limit 10</string>
+		<string>select
+f.title,
+l.name as "language"
+from film f
+LEFT JOIN language l on f.language_id = l.language_id
+#LEFT JOIN language l using l.language_id
+where l.language_id &lt;&gt; 1
+limit 10</string>
+		<string>#4.1	language selection available per movie
+select
+f.title,
+l.name as "language"
+from film f
+LEFT JOIN language l on f.language_id = l.language_id
+#LEFT JOIN language l using l.language_id
+where l.language_di &lt;&gt; 1
+limit 10</string>
+		<string>select
+f.title,
+l.name as "language"
+from film f
+LEFT JOIN language l on f.language_id = l.language_id
+#LEFT JOIN language l using l.language_id
+limit 10</string>
+		<string>select
+f.title,
+#l.name as "language",
+f.original_language_id
+#l.language_id
+from film f
+#LEFT JOIN language l on f.original_language_id = l.language_id
+#LEFT JOIN language l using l.language_id
+limit 10</string>
+		<string>select
+f.title,
+l.name as "language",
+f.original_language_id,
+l.language_id
+from film f
+LEFT JOIN language l on f.original_language_id = l.language_id
+#LEFT JOIN language l using l.language_id
+limit 10</string>
+		<string>select
+f.title,
+l.name as "language",
+f.origina_language_id,
+l.language_id
+from film f
+LEFT JOIN language l on f.original_language_id = l.language_id
+#LEFT JOIN language l using l.language_id
+limit 10</string>
+		<string>select
+f.title,
+l.name as "language"
+from film f
+LEFT JOIN language l on f.original_language_id = l.language_id
+#LEFT JOIN language l using l.language_id
+limit 10</string>
+		<string>select
+f.title,
+l.name as "language"
+from film f
+LEFT JOIN language l on f.original_language_id = l.language_id
+#LEFT JOIN language l using l.language_id</string>
+		<string>select
+f.title,
+l.name as "language"
+from film f
+#LEFT JOIN l.language on f.original_language_id = l.language_id
+LEFT JOIN language l using l.language_id
+limit 10</string>
+		<string>select
+f.title,
+l.name as "language"
+from film f
+#LEFT JOIN l.language on f.original_language_id = l.language_id
+LEFT JOIN l.language using l.language_id
+limit 10</string>
+		<string>select
+f.title,
+language.name as "language"
+from film f
+#LEFT JOIN l.language on f.original_language_id = l.language_id
+LEFT JOIN l.language on l.language_id
+limit 10</string>
+		<string>select
+f.title,
+l.name as "language"
+from film f
+#LEFT JOIN l.language on f.original_language_id = l.language_id
+LEFT JOIN l.language on l.language_id
+limit 10</string>
+		<string>#4.1	language selection available per movie
+select
+f.title,
+l.name as "language"
+from film f
+LEFT JOIN l.language on l.language_id = f.original_language_id
+limit 10</string>
+	</array>
+	<key>rdbms_type</key>
+	<string>mysql</string>
+	<key>rdbms_version</key>
+	<string>8.0.21</string>
+	<key>version</key>
+	<integer>1</integer>
+</dict>
+</plist>
